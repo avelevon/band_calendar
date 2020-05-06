@@ -36,3 +36,49 @@
     transform: rotate(360deg);
   }
 }
+
+table {
+  overflow: auto;
+  display: block;
+  border-collapse: separate;
+  border-spacing: 0;
+  position: relative;
+}
+
+.Calendar {
+  z-index: 12;
+
+  .months {
+    height: 25px;
+
+    td {
+      top: 0;
+    }
+  }
+
+  .weeks {
+    height: 25px;
+
+    td {
+      top: 25px;
+    }
+  }
+
+  .days {
+    height: 50px;
+
+    td {
+      top: 50px;
+    }
+  }
+
+  tr {
+    td {
+      position: sticky;
+      background-color: white;
+      z-index: 12;
+      border: 1px solid rgba(128, 128, 128, 0.5);
+      text-align: center;
+    }
+  }
+}

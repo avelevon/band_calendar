@@ -1,0 +1,9 @@
+.TimeLine {
+  position: absolute;
+  height: calc(100vh - 220px);
+  width: 1px;
+  background-color: darkred;
+  top: 35px;
+  transform: translateX(-1px);
+  z-index: 100;
+}

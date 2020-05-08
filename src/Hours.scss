@@ -1,0 +1,81 @@
+.Hours {
+  display: flex;
+  margin-top: 15px;
+  counter-reset: hour;
+  position: relative;
+
+  //&:after {
+  //  content: '';
+  //  display: block;
+  //  position: absolute;
+  //  width: 37.5%;
+  //  left: 37.5%;
+  //  height: 3px;
+  //  bottom: -1px;
+  //  background-color: #ff443d;
+  //}
+
+  .hours3, .hours24 {
+    display: flex;
+    align-items: flex-end;
+    width: 12.5%;
+    height: 10px;
+    border-right: 1px solid grey;
+    box-sizing: border-box;
+    position: relative;
+
+    &:after {
+      counter-increment: hour 3;
+      content: counter(hour);
+      position: absolute;
+      font-size: small;
+      left: 100%;
+      top: -16px;
+      transform: translateX(-50%);
+    }
+  }
+
+  .hours3:last-child {
+    border: none;
+    &:after {
+      content: none;
+    }
+  }
+
+  .hours24 {
+    &:after {
+      counter-increment: hour 1;
+    }
+  }
+
+  .hours24:last-child {
+    border: none;
+    &:after {
+      content: none;
+    }
+  }
+
+  .hours1, .hours60 {
+    width: 33.33%;
+    border-right: 1px solid grey;
+    height: 8px;
+
+  }
+  .hours60 {
+    width: 25%;
+  }
+
+  .hours1:last-child, .hours60:last-child {
+    border: none;
+  }
+
+  .working-hours3 {
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+    height: 5px;
+    width: 300px;
+    background-color: #8cf5eb;;
+  }
+
+}

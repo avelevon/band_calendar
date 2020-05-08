@@ -1,17 +1,38 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React, {useRef, useCallback, useState} from 'react';
+import ReactDom from 'react-dom';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+import Calendar from "./Calendar";
+
+const App = () => {
+
+    const [homeNode, setHomeNode] = useState()
+    const [range, setRange] = useState([10, 10])
+
+    const increaseRange = () => {
+        setRange(prevState => ([prevState[0] + 10, prevState[1] + 10]))
+    }
+
+    const homeRef = useCallback(node => {
+        node && !homeNode ? setHomeNode(node) : null
+    }, [])
+
+    // console.log('render', homeNode)
+    return (
+        <div className="layout">
+            <table ref={homeRef}>
+                <thead className="Calendar">
+                {homeNode && <Calendar
+                    homeNode={homeNode}
+                    range={range}
+                />}
+                </thead>
+            </table>
+            <button onClick={increaseRange}>Forward</button>
+        </div>
+    );
+};
+
+ReactDom.render(
+    <App/>,
+    document.getElementById('wrapper')
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

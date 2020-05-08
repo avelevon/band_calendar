@@ -1,9 +1,8 @@
 import './Hours.scss'
 import React, {Fragment, PureComponent} from 'react';
-import {connect} from "react-redux";
 
-const Hours = (props) => {
-    const {width} = props.scale;
+const Hours = props => {
+    const width = props.scale;
 
     const period3 = [0, 1, 2, 3, 4, 5, 6, 7];
     const period24 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];

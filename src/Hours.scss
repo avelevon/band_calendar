@@ -1,8 +1,9 @@
 .Hours {
   display: flex;
-  margin-top: 15px;
   counter-reset: hour;
-  position: relative;
+  position: absolute;
+  width: 100%;
+  bottom: 1px;
 
   //&:after {
   //  content: '';

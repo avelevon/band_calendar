@@ -2,8 +2,10 @@
   "name": "band_calendar",
   "version": "0.1.0",
   "description": "Band calendar for use in table tags",
-  "main": "webpack.config.js",
+  "main": "index.js",
   "scripts": {
+    "dev": "webpack-dev-server --mode development",
+    "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +17,28 @@
   "bugs": {
     "url": "https://github.com/avelevon/band_calendar/issues"
   },
-  "homepage": "https://github.com/avelevon/band_calendar#readme"
+  "homepage": "https://github.com/avelevon/band_calendar#readme",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "moment": "^2.25.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-import": "^1.13.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "css-loader": "^3.5.3",
+    "html-webpack-plugin": "^4.3.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "moment-locales-webpack-plugin": "^1.2.0",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^8.0.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  }
 }

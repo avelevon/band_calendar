@@ -1,25 +1,26 @@
-import React, { Fragment, useEffect, useRef, useState, useMemo, useCallback} from 'react';
+import './Calendar.scss'
+import React, {Fragment, useEffect, useRef, useState, useMemo, useCallback} from 'react';
+
+import TimeLine from "./TimeLine";
+import Hours from "./Hours";
 
 import moment from "moment";
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
 
-const Calendar = (props) => {
-    const {onPause, offPause, incrementBack, incrementForward, homeRef, setScrollCanTrigger} = props;
+const Calendar = props => {
+    const {
+        homeNode,
+        range = [10, 10],
+        dayMinWidth = '200px'
+    } = props;
 
-
+    const [todayNode, setTodayNode] = useState()
     const [dates, setDates] = useState([])
-    const todayRef = useRef();
     const timeLineRef = useRef();
-    const [scrollFlag, setScrollFlag] = useState(true);
-    const [oldWidth, setOldWidth] = useState(0);
     const [refMonth, setRefMonth] = useState([]);
     const [refText, setRefText] = useState([]);
-
-    const scale = {
-        width: 200,
-        height: 60
-    }
+    const [scrollTrigger, setScrollTrigger] = useState(false)
 
     const innerText = useRef();
 
@@ -27,102 +28,63 @@ const Calendar = (props) => {
     let today = moment();
 
     useEffect(() => {
+        let start = range[0]
+        let end = range[1]
+
+        if (range[0] === -1) {
+            start = moment().dayOfYear() - 1
+        }
+
+        if (range[1] === -1) {
+            const year = moment().year()
+            end = moment(`${year}-12-31`).dayOfYear() - moment().dayOfYear()
+        }
+
         setDates(() => {
             const arr = [];
-            const range = 10;
-            for (let i = -range; i < range + 1; i++) {
+            for (let i = -start; i < end + 1; i++) {
                 arr.push(moment().add(i, 'days').startOf('day'))
             }
             return arr
         })
-    }, [])
+    }, [range])
 
-    // useEffect(() => {
-    //     scrollToToday();
-    //     interval = setInterval(() => {
-    //         calcTimeLine();
-    //         !moment().isSame(today, 'day') ? window.location.reload() : null;
-    //     }, 60000);
-    //     monthPositionHandler();
-    //     monthTextRef();
-    //     return () => {
-    //         clearInterval(interval);
-    //     }
-    // }, []);
+    useEffect(() => {
+        homeNode && !isEmpty(refMonth) && !isEmpty(refText) ? homeNode.addEventListener('scroll', monthPositionHandler) : null
+        return () => homeNode.removeEventListener('scroll', monthPositionHandler)
+    }, [homeNode, refMonth, refText])
 
-    // useEffect(() => {
-    //     calcTimeLine();
-    //     if (oldWidth < homeRef.firstChild.clientWidth) {
-    //         scrollToRightAfterBack(oldWidth, homeRef.firstChild.clientWidth);
-    //         setOldWidth(homeRef.firstChild.clientWidth);
-    //     }
-    // });
+    useEffect(() => {
+        if (!scrollTrigger && todayNode && homeNode) {
+            scrollToToday();
+            calcTimeLine();
+            setScrollTrigger(true)
+        }
+        // interval = setInterval(() => {
+        //     calcTimeLine();
+        //     !moment().isSame(today, 'day') ? window.location.reload() : null;
+        // }, 60000);
+        // monthPositionHandler();
+        // monthTextRef();
+        // return () => {
+        //     clearInterval(interval);
+        // }
+    }, [todayNode, homeNode]);
 
-    // const scrollToRightAfterBack = (oldWidth, newWidth) => {
-    //     if (homeRef.scrollLeft < 10) {
-    //         homeRef.scrollTo(newWidth - oldWidth, 0);
-    //     }
-    // };
+    const scrollToToday = () => {
+        if (homeNode && todayNode) {
+            homeNode.scrollTo(todayNode.offsetLeft - (window.innerWidth / 2) + (todayNode.clientWidth / 2), 0);
+        }
+    };
 
-    // const scrollToToday = () => {
-    //     let shift = 0;
-    //     timeLineRef.current ? shift = timeLineRef.current.offsetLeft - (window.innerWidth / 5) : null;
-    //     if (homeRef && todayRef.current) {
-    //         homeRef.scrollTo(todayRef.current.offsetLeft - (window.innerWidth / 5) + shift, 0);
-    //         homeRef.addEventListener('scroll', () => {
-    //             setScrollFlag(false)
-    //         });
-    //     }
-    // };
+    const calcTimeLine = () => {
+        const date = moment();
+        const dateZero = moment().startOf('days');
+        let timePercent = Math.round((date.valueOf() - dateZero.valueOf()) * 10000 / 86400000);
+        timeLineRef.current ? timeLineRef.current.style.left = timePercent / 100 + '%' : null;
+    };
 
-    // const loadMoreDatesHandler = ({cycleBack, cycleForward, scrollCanTrigger}) => {
-    //     if (homeRef.firstChild.clientWidth - homeRef.clientWidth + 1 - homeRef.scrollLeft < 10) {
-    //         if (scrollCanTrigger) {
-    //             setScrollCanTrigger(false)
-    //             onPause();
-    //             loadMoreDates('forward', config.TASK_RANGE);
-    //             loadMoreTasks('forward', cycleForward, config.TASK_RANGE, () => {
-    //                 incrementForward();
-    //                 offPause();
-    //             });
-    //         }
-    //     }
-    //     if (homeRef.scrollLeft < 10) {
-    //         if (scrollCanTrigger) {
-    //             setScrollCanTrigger(false)
-    //             onPause();
-    //             loadMoreDates('back', config.TASK_RANGE);
-    //             loadMoreTasks('back', cycleBack, config.TASK_RANGE, () => {
-    //                 incrementBack();
-    //                 offPause();
-    //             });
-    //         }
-    //     }
-    //
-    //     if (homeRef.scrollLeft > 10 && homeRef.firstChild.clientWidth - homeRef.clientWidth + 1 - homeRef.scrollLeft > 10) {
-    //         setScrollCanTrigger(true)
-    //     }
-    // };
-
-    // const calcTimeLine = () => {
-    //     const date = moment();
-    //     const dateZero = moment().startOf('days');
-    //     let timePercent = Math.round((date.valueOf() - dateZero.valueOf()) * 10000 / 86400000);
-    //     timeLineRef.current ? timeLineRef.current.style.left = timePercent / 100 + '%' : null;
-    // };
-
-    const monthsSpan = useMemo(() => {
-        return dates.filter((date, i, arr) => {
-            if (i > 0) {
-                // console.log('monthSpan calculate')
-                return date.month() !== arr[i - 1].month()
-            }
-            // console.log('monthSpan calculate')
-            return true;
-
-        })
-
-    }, [dates]);
+    const monthsSpan = useMemo(() => dates.filter((date, i, arr) => i > 0 ? date.month() !== arr[i - 1].month() : true), [dates]);
 
     const weeksSpan = dates.filter((date, i, arr) => {
         if (i > 0) {
@@ -131,64 +93,50 @@ const Calendar = (props) => {
         return true;
     });
 
-    // const setMonthRef = useCallback(ref => {
-    //     if (ref !== null) {
-    //         monthsSpan.map(() => {
-    //             if (!refMonth.find(item => item.innerText === ref.innerText)) {
-    //                 setRefMonth(prevState => prevState.concat(ref))
-    //             }
-    //         })
-    //     }
-    // }, []);
-    //
-    // const setTextRef = useCallback(ref => {
-    //     if (ref !== null) {
-    //         monthsSpan.map(() => {
-    //             if (!refText.find(item => item.innerText === ref.innerText)) {
-    //                 setRefText(prevState => prevState.concat(ref))
-    //             }
-    //         })
-    //     }
-    // }, []);
-    //
-    //
-    // const monthPositionHandler = () => {
-    //     monthsSpan.forEach((item, i) => {
-    //         if (refMonth[i*2]) {
-    //             const refPos = refMonth[i*2].getBoundingClientRect();
-    //             let pos = -refPos.left + homeRef.clientWidth / 2;
-    //             if (-refPos.left + homeRef.clientWidth / 2 > refPos.width - 130) {
-    //                 pos = refPos.width - 130;
-    //             }
-    //             if (refPos.right - homeRef.clientWidth / 2 > refPos.width - 20) {
-    //                 pos = 20;
-    //             }
-    //
-    //             innerText.current = {
-    //                 ...innerText.current,
-    //                 [refMonth[i*2].innerText]: pos,
-    //             };
-    //         }
-    //     })
-    //
-    // };
-    //
-    // const monthTextRef = () => {
-    //     monthsSpan.forEach((item, i) => {
-    //         refText[i*2] && !isEmpty(innerText.current) ? refText[i*2].style.left = innerText.current[refText[i*2].innerText] + 'px' : null;
-    //     })
-    // };
+    const setMonthRef = useCallback(ref => {
+        if (ref !== null) {
+            setRefMonth(prevState => prevState.concat(ref))
+        }
+    }, []);
 
-    // console.log('calendar render')
+    const setTextRef = useCallback(ref => {
+        if (ref !== null) {
+            setRefText(prevState => prevState.concat(ref))
+        }
+    }, []);
+
+
+    const monthPositionHandler = () => {
+        monthsSpan.forEach((item, i) => {
+            if (refMonth[i]) {
+                const refPos = refMonth[i].getBoundingClientRect();
+                let pos = -refPos.left + homeNode.clientWidth / 2 - (refText[i].clientWidth / 2);
+                if (-refPos.left + homeNode.clientWidth / 2 > refPos.width - refText[i].clientWidth / 2) {
+                    pos = refPos.width - refText[i].clientWidth;
+                }
+                if (refPos.right - homeNode.clientWidth / 2 > refPos.width - refText[i].clientWidth / 2) {
+                    pos = 0;
+                }
+
+                innerText.current = {
+                    ...innerText.current,
+                    [refMonth[i].innerText]: pos,
+                };
+            }
+            refText[i] && !isEmpty(innerText.current) ? refText[i].style.left = innerText.current[refText[i].innerText] + 'px' : null;
+        })
+    };
+
+    // console.log('calendar render', todayNode)
     return (
         <Fragment>
             <tr className="months">
                 <td>Month</td>
                 {monthsSpan.map((item, index) => <td key={index}
-                                                     // ref={setMonthRef}
+                                                     ref={setMonthRef}
                                                      colSpan={index !== monthsSpan.length - 1 ? item.daysInMonth() - (item.date() - 1) : dates[dates.length - 1].date()}>
                     <div className="month-position"
-                         // ref={setTextRef}
+                         ref={setTextRef}
                          style={{
                              position: 'absolute',
                              top: 0,
@@ -208,15 +156,15 @@ const Calendar = (props) => {
                 }}>Day
                 </td>
                 {dates.map((date, index) => <td key={date.format() + index}
-                                                ref={moment().isSame(date, 'day') ? todayRef : null}
+                                                ref={moment().isSame(date, 'day') ? node => setTodayNode(node) : null}
                                                 className={moment().isSame(date, 'day') ? 'today' : null}
                                                 style={{
-                                                    minWidth: scale.width + 'px'
+                                                    minWidth: dayMinWidth
                                                 }}
                 >
-                    <div>{date.date()} / {date.format('dd')}</div>
-                    {/*{scale.width > 100 ? <Hours scale={scale}/> : null}*/}
-                    {/*{moment().isSame(date, 'day') ? <TimeLine ref={timeLineRef}/> : null}*/}
+                    <div style={todayNode && todayNode.clientWidth > 100 ? {marginBottom: '24px'} : null}>{date.date()} / {date.format('dd')}</div>
+                    {todayNode && todayNode.clientWidth > 100 ? <Hours scale={todayNode.clientWidth}/> : null}
+                    {moment().isSame(date, 'day') ? <TimeLine ref={timeLineRef}/> : null}
 
                 </td>)}
             </tr>

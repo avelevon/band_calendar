@@ -12,7 +12,9 @@ const Calendar = props => {
     const {
         homeNode,
         range = [10, 10],
-        dayMinWidth = '200px'
+        dayMinWidth = '200px',
+        firstTdWidth = '200px',
+        scrollToToday = true,
     } = props;
 
     const [todayNode, setTodayNode] = useState()
@@ -20,7 +22,6 @@ const Calendar = props => {
     const timeLineRef = useRef();
     const [refMonth, setRefMonth] = useState([]);
     const [refText, setRefText] = useState([]);
-    const [scrollTrigger, setScrollTrigger] = useState(false)
 
     const innerText = useRef();
 
@@ -55,10 +56,9 @@ const Calendar = props => {
     }, [homeNode, refMonth, refText])
 
     useEffect(() => {
-        if (!scrollTrigger && todayNode && homeNode) {
-            scrollToToday();
+        if (todayNode && homeNode && scrollToToday) {
+            scrollToTodayFun();
             calcTimeLine();
-            setScrollTrigger(true)
         }
         // interval = setInterval(() => {
         //     calcTimeLine();
@@ -69,9 +69,9 @@ const Calendar = props => {
         // return () => {
         //     clearInterval(interval);
         // }
-    }, [todayNode, homeNode]);
+    }, [todayNode, homeNode, scrollToToday]);
 
-    const scrollToToday = () => {
+    const scrollToTodayFun = () => {
         if (homeNode && todayNode) {
             homeNode.scrollTo(todayNode.offsetLeft - (window.innerWidth / 2) + (todayNode.clientWidth / 2), 0);
         }
@@ -152,7 +152,7 @@ const Calendar = props => {
             </tr>
             <tr className="days">
                 <td style={{
-                    minWidth: '200px'
+                    minWidth: firstTdWidth
                 }}>Day
                 </td>
                 {dates.map((date, index) => <td key={date.format() + index}

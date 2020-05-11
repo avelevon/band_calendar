@@ -11,14 +11,15 @@ import isEmpty from 'lodash/isEmpty';
 const Calendar = props => {
     const {
         homeNode,
-        range = [10, 10],
+        range,
         dayMinWidth = '200px',
         firstTdWidth = '200px',
         scrollToToday = true,
+        dates,
     } = props;
 
     const [todayNode, setTodayNode] = useState()
-    const [dates, setDates] = useState([])
+    // const [dates, setDates] = useState([])
     const timeLineRef = useRef();
     const [refMonth, setRefMonth] = useState([]);
     const [refText, setRefText] = useState([]);
@@ -28,27 +29,27 @@ const Calendar = props => {
     let interval;
     let today = moment();
 
-    useEffect(() => {
-        let start = range[0]
-        let end = range[1]
-
-        if (range[0] === -1) {
-            start = moment().dayOfYear() - 1
-        }
-
-        if (range[1] === -1) {
-            const year = moment().year()
-            end = moment(`${year}-12-31`).dayOfYear() - moment().dayOfYear()
-        }
-
-        setDates(() => {
-            const arr = [];
-            for (let i = -start; i < end + 1; i++) {
-                arr.push(moment().add(i, 'days').startOf('day'))
-            }
-            return arr
-        })
-    }, [range])
+    // useEffect(() => {
+    //     let start = range[0]
+    //     let end = range[1]
+    //
+    //     if (range[0] === -1) {
+    //         start = moment().dayOfYear() - 1
+    //     }
+    //
+    //     if (range[1] === -1) {
+    //         const year = moment().year()
+    //         end = moment(`${year}-12-31`).dayOfYear() - moment().dayOfYear()
+    //     }
+    //
+    //     setDates(() => {
+    //         const arr = [];
+    //         for (let i = -start; i < end + 1; i++) {
+    //             arr.push(moment().add(i, 'days').startOf('day'))
+    //         }
+    //         return arr
+    //     })
+    // }, [range])
 
     useEffect(() => {
         homeNode && !isEmpty(refMonth) && !isEmpty(refText) ? homeNode.addEventListener('scroll', monthPositionHandler) : null

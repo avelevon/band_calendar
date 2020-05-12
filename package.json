@@ -2,7 +2,7 @@
   "name": "band_calendar",
   "version": "0.1.2",
   "description": "Band calendar for use in table tags",
-  "main": "CalendarContainer.jsx",
+  "main": "./dist/bundle.js",
   "scripts": {
     "dev": "webpack-dev-server --mode development",
     "build": "webpack --mode production",

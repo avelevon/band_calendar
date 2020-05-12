@@ -26,8 +26,8 @@ const Calendar = props => {
 
     const innerText = useRef();
 
-    let interval;
-    let today = moment();
+    // let interval;
+    // let today = moment();
 
     // useEffect(() => {
     //     let start = range[0]

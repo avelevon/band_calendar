@@ -1,7 +1,7 @@
 import './Calendar.scss'
 import React, {Fragment, useEffect, useRef, useState, useMemo, useCallback} from 'react';
 
-import TimeLine from "./TimeLine";
+// import TimeLine from "./TimeLine";
 import Hours from "./Hours";
 
 import moment from "moment";
@@ -165,7 +165,7 @@ const Calendar = props => {
                 >
                     <div style={todayNode && todayNode.clientWidth > 100 ? {marginBottom: '24px'} : null}>{date.date()} / {date.format('dd')}</div>
                     {todayNode && todayNode.clientWidth > 100 ? <Hours scale={todayNode.clientWidth}/> : null}
-                    {moment().isSame(date, 'day') ? <TimeLine ref={timeLineRef}/> : null}
+                    {/*{moment().isSame(date, 'day') ? <TimeLine ref={timeLineRef}/> : null}*/}
 
                 </td>)}
             </tr>

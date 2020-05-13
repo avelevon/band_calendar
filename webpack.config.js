@@ -35,6 +35,9 @@ module.exports = {
       }
     ]
   },
+  externals: {
+    react: 'react'
+  },
   devServer: {
     historyApiFallback: true,
   },
